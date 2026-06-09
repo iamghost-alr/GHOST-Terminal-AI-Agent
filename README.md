@@ -14,6 +14,7 @@ GHOST is a modular AI-powered terminal assistant built with Python. It combines 
 - Web Search Integration
 - Conversation History
 - Voice Output using Piper TTS
+- Database for saving memories.
 - Modular Project Architecture
 
 ## Project Structure
@@ -31,6 +32,7 @@ GHOST-Terminal-AI-Agent/
 │   ├── notes.py
 │   ├── weather.py
 │   ├── web_search.py
+│   ├── dbtool.py
 │   └── time.py
 │
 ├── voice/
@@ -54,6 +56,7 @@ GHOST-Terminal-AI-Agent/
 - DeepSeek Chat
 - Rich
 - Piper TTS
+- MongoDB
 - Requests
 - dotenv
 
@@ -102,12 +105,13 @@ python app.py
 
 ## Current Capabilities
 
-- General AI conversations
+- AI conversations
 - Mathematical calculations
 - Saving notes and reminders
 - Weather lookup
 - Date and time queries
 - Web search
+- Saving and fetching memories.
 - Voice responses
 
 ## Future Plans
