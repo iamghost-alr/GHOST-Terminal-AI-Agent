@@ -8,6 +8,7 @@ from tools.notes import save_note, show_notes, clear_notes
 from tools.weather import check_weather
 from tools.web_search import web_search
 from tools.dbtool import save_memory, get_memories
+import webbrowser
 
 operator_map = {
     "plus": "add",
@@ -45,6 +46,9 @@ memory_keywords = [
     "what are my habits",
     "tell me about myself"
 ]
+
+sites = ["google", "youtube", "instagram", "facebook", "twitter", "tiktok"]
+
 
 def tool_router(user_input):
 
@@ -108,23 +112,25 @@ def tool_router(user_input):
 
         return check_date()
 
-
-    # NOTES TOOL
-    elif "note" in user_input:
-
-        note = user_input.replace("note","",).replace("a note","",).strip()
-
-        return save_note(note)
-
-
     # SHOW NOTES
-    elif "show notes" in user_input:
-
+    elif "show notes" in user_input.lower():
         return show_notes()
 
-    elif "clear notes" in user_input:
-
+    # CLEAR NOTES
+    elif "clear notes" in user_input.lower():
         return clear_notes()
+
+    # SAVE NOTE
+    elif "note" in user_input.lower():
+
+        note = (
+            user_input
+            .replace("note", "")
+            .replace("a note", "")
+            .strip()
+        )
+
+        return save_note(note)
 
     #WEATHER TOOL
 
