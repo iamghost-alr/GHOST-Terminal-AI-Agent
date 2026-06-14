@@ -7,7 +7,7 @@ GHOST is a modular AI-powered terminal assistant built with Python. It combines 
 - AI Chat using OpenRouter
 - Custom Assistant Personality
 - Terminal User Interface using Rich
-- Calculator Tool
+- API optimzation to reduce cost- Calculator Tool
 - Notes Memory System
 - Weather Information
 - Date and Time Utilities
@@ -26,6 +26,9 @@ GHOST-Terminal-AI-Agent/
 │
 ├── router/
 │   └── tool_router.py
+│
+├── database/
+│   └── db.py
 │
 ├── tools/
 │   ├── calculator.py
@@ -106,19 +109,18 @@ python app.py
 ## Current Capabilities
 
 - AI conversations
-- Mathematical calculations
+- Mathematical calculations locally
 - Saving notes and reminders
 - Weather lookup
 - Date and time queries
 - Web search
-- Saving and fetching memories.
+- Saving and fetching memories using database.
 - Voice responses
 
 ## Future Plans
 
 - Speech-to-Text
 - Wake Word Detection
-- Long-Term Memory
 - Local LLM Support
 - Agentic Workflows
 - Multi-Tool Reasoning
