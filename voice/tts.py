@@ -90,7 +90,7 @@ def speak(text):
     if not text.strip():
         return
 
-    speech_queue.put(text)
+    speech_queue.put("............" + text)
 
 
 def stop_speaking():

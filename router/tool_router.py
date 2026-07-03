@@ -7,8 +7,9 @@ from tools.time import check_time, check_date
 from tools.notes import save_note, show_notes, clear_notes
 from tools.weather import check_weather
 from tools.web_search import web_search
+from tools.sites import open_sites
 from tools.dbtool import save_memory, get_memories
-import webbrowser
+from tools.application import open_app
 
 operator_map = {
     "plus": "add",
@@ -47,10 +48,12 @@ memory_keywords = [
     "tell me about myself"
 ]
 
-sites = ["google", "youtube", "instagram", "facebook", "twitter", "tiktok"]
-
-
 def tool_router(user_input):
+
+    # SITES TOOL
+    if "sites" in user_input.lower() or "open" in user_input.lower():
+        return open_sites(user_input)
+               
 
     # MATH TOOL
     if any(op in user_input.lower() for op in math_keywords):
@@ -147,6 +150,12 @@ def tool_router(user_input):
         )
 
         return check_weather(city)
+
+    #APPLICATION TOOL
+    elif "access" in user_input.lower():
+        
+        app = user_input.lower().replace("access", "").strip()
+        return open_app(app)
 
     elif "search" in user_input:
 

@@ -32,6 +32,8 @@ GHOST-Terminal-AI-Agent/
 │
 ├── tools/
 │   ├── calculator.py
+│   |__ applications.py
+│   |__ sites.py
 │   ├── notes.py
 │   ├── weather.py
 │   ├── web_search.py

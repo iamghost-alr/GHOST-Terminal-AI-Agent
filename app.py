@@ -53,82 +53,134 @@ if not API_KEY:
 chat_history = []
 MAX_HISTORY = 20
 
-show_banner()
-startup()
-divider()
+def main():
 
-while True:
+    global chat_history
 
-    user_input()
-    query = input().strip()
-
-    if query.lower() in ["quit", "exit"]:
-        warning("Shutting down GHOST...")
-        break
-
+    show_banner()
+    startup()
     divider()
 
-    chat_history.append(
-        {
-            "role": "user",
-            "content": query
-        }
-    )
+    while True:
 
-    if len(chat_history) > MAX_HISTORY:
-        chat_history = chat_history[-MAX_HISTORY:]
+        user_input()
+        query = input().strip()
 
-    try:
+        if query.lower() in ["quit", "exit"]:
+            warning("Shutting down GHOST...")
+            break
 
-        tool_response = tool_router(query)
+        divider()
 
-        if tool_response:
+        chat_history.append(
+            {
+                "role": "user",
+                "content": query
+            }
+        )
 
-            if (
-                isinstance(tool_response, dict)
-                and tool_response.get("type") == "memory"
-            ):
+        if len(chat_history) > MAX_HISTORY:
+            chat_history = chat_history[-MAX_HISTORY:]
 
-                memories = tool_response["data"]
+        try:
 
-                memory_context = "\n".join(
-                    [
-                        memory["content"]
-                        for memory in memories
+            tool_response = tool_router(query)
+
+            if tool_response:
+
+                if (
+                    isinstance(tool_response, dict)
+                    and tool_response.get("type") == "memory"
+                ):
+
+                    memories = tool_response["data"]
+
+                    memory_context = "\n".join(
+                        [
+                            memory["content"]
+                            for memory in memories
+                        ]
+                    )
+
+                    messages = [
+                        {
+                            "role": "system",
+                            "content": custom_prompt
+                        },
+                        {
+                            "role": "system",
+                            "content": f"""
+                            Relevant user memories:
+
+                            {memory_context}
+
+                            Use these memories when answering.
+                            """
+                        },
+                        {
+                            "role": "user",
+                            "content": query
+                        }
                     ]
-                )
+
+                    payload = {
+                        "model": "deepseek/deepseek-chat-v3.1",
+                        "messages": messages
+                    }
+
+                    headers = {
+                        "Authorization": f"Bearer {API_KEY}",
+                        "Content-Type": "application/json",
+                        "HTTP-Referer": "https://github.com/GHOST-Terminal-AI-Agent",
+                        "X-Title": "GHOST Terminal AI"
+                    }
+
+                    response = requests.post(
+                        url="https://openrouter.ai/api/v1/chat/completions",
+                        headers=headers,
+                        json=payload,
+                        timeout=60
+                    )
+
+                    reply = response.json()["choices"][0]["message"]["content"]
+
+                    cleaned = clean_response(reply)
+
+                    ai_response(cleaned)
+
+                    speak(cleaned)
+
+                else:
+
+                    tool_used("Utility")
+
+                    cleaned = clean_response(str(tool_response))
+
+                    ai_response(cleaned)
+
+                    speak(cleaned)
+
+            else:
+
+                thinking()
 
                 messages = [
                     {
                         "role": "system",
                         "content": custom_prompt
-                    },
-                    {
-                        "role": "system",
-                        "content": f"""
-                        Relevant user memories:
-
-                        {memory_context}
-
-                        Use these memories when answering.
-                        """
-                    },
-                    {
-                        "role": "user",
-                        "content": query
                     }
-                ]
-
-                payload = {
-                    "model": "deepseek/deepseek-chat-v3.1",
-                    "messages": messages
-                }
+                ] + chat_history
 
                 headers = {
                     "Authorization": f"Bearer {API_KEY}",
                     "Content-Type": "application/json",
                     "HTTP-Referer": "https://github.com/GHOST-Terminal-AI-Agent",
                     "X-Title": "GHOST Terminal AI"
+                    }
+
+                payload = {
+                    "model": "deepseek/deepseek-chat-v3.1",
+                    "messages": messages
                 }
 
                 response = requests.post(
@@ -138,7 +190,23 @@ while True:
                     timeout=60
                 )
 
-                reply = response.json()["choices"][0]["message"]["content"]
+                if response.status_code != 200:
+                    show_error(
+                        f"HTTP {response.status_code}: {response.text}"
+                    )
+                    divider()
+                    continue
+
+                data = response.json()
+
+                if "choices" not in data:
+                    show_error(
+                        f"API error: {data.get('error', {}).get('message', str(data))}"
+                    )
+                    divider()
+                    continue
+
+                reply = data["choices"][0]["message"]["content"]
 
                 cleaned = clean_response(reply)
 
@@ -146,78 +214,17 @@ while True:
 
                 speak(cleaned)
 
-            else:
-
-                tool_used("Utility")
-
-                cleaned = clean_response(str(tool_response))
-
-                ai_response(cleaned)
-
-                speak(cleaned)
-
-        else:
-
-            thinking()
-
-            messages = [
-                {
-                    "role": "system",
-                    "content": custom_prompt
-                }
-            ] + chat_history
-
-            headers = {
-                "Authorization": f"Bearer {API_KEY}",
-                "Content-Type": "application/json",
-                "HTTP-Referer": "https://github.com/GHOST-Terminal-AI-Agent",
-                "X-Title": "GHOST Terminal AI"
-                }
-
-            payload = {
-                "model": "deepseek/deepseek-chat-v3.1",
-                "messages": messages
+                chat_history.append(
+            {
+                "role": "assistant",
+                "content": reply
             }
+        )
 
-            response = requests.post(
-                url="https://openrouter.ai/api/v1/chat/completions",
-                headers=headers,
-                json=payload,
-                timeout=60
-            )
+        except Exception as e:
+            show_error(str(e))
 
-            if response.status_code != 200:
-                show_error(
-                    f"HTTP {response.status_code}: {response.text}"
-                )
-                divider()
-                continue
+        divider()
 
-            data = response.json()
-
-            if "choices" not in data:
-                show_error(
-                    f"API error: {data.get('error', {}).get('message', str(data))}"
-                )
-                divider()
-                continue
-
-            reply = data["choices"][0]["message"]["content"]
-
-            cleaned = clean_response(reply)
-
-            ai_response(cleaned)
-
-            speak(cleaned)
-
-            chat_history.append(
-        {
-            "role": "assistant",
-            "content": reply
-        }
-    )
-
-    except Exception as e:
-        show_error(str(e))
-
-    divider()
+if __name__ == "__main__":
+    main()
