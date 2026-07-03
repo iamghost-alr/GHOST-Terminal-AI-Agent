@@ -7,7 +7,7 @@ GHOST is a modular AI-powered terminal assistant built with Python. It combines 
 - AI Chat using OpenRouter
 - Custom Assistant Personality
 - Terminal User Interface using Rich
-- API optimzation to reduce cost- Calculator Tool
+- API optimzation to reduce cost
 - Notes Memory System
 - Weather Information
 - Date and Time Utilities
