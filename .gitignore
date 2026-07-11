@@ -44,3 +44,11 @@ tmp/
 htmlcov/
 
 .pytest_cache/
+
+.ghost.egg-info/
+
+.zcode/
+
+.experiments/
+
+.claude/

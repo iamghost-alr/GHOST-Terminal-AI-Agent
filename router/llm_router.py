@@ -20,6 +20,7 @@ VALID_TOOLS = [
     "web_search",
     "sites",
     "application",
+    "setup",
     "memory",
     "none",
 ]
@@ -35,8 +36,11 @@ TOOLS:
 - notes      : saving, showing, or clearing notes/reminders
 - weather    : weather conditions for a location
 - web_search : look something up on the internet
-- sites      : open a specific website (youtube, google, github, ...)
+- sites      : open a specific website (youtube, google, github, ...) or a raw
+               URL or a browser search for something
 - application: open a desktop application (calculator, browser, editor, ...)
+- setup      : launch a predefined bundle of apps/sites, e.g. "initialize my
+               setup", "start my dev environment", "open my coding setup"
 - memory     : save something about the user OR recall stored user facts
 - none       : general conversation / none of the above
 
