@@ -1,34 +1,67 @@
-import math
+from tools.base import Tool
+
+
+# Words / symbols the user may type -> canonical operator.
+operator_map = {
+    "plus": "add",
+    "add": "add",
+    "+": "add",
+    "minus": "sub",
+    "subtract": "sub",
+    "sub": "sub",
+    "-": "sub",
+    "multiply": "mul",
+    "times": "mul",
+    "mul": "mul",
+    "*": "mul",
+    "divide": "div",
+    "div": "div",
+    "/": "div",
+    "power": "pow",
+    "pow": "pow",
+    "^": "pow",
+    "**": "pow",
+}
+
 
 def calculator(a, b, operator):
-    """
-    Args:
-    a (int): First number
-    b (int): Second number
-    operator (str): +, -, *, /, **
-    
-    """
+    """Run a single binary calculation.
 
+    Accepts both symbols (+, -, *, /) and words
+    (plus, minus, multiply, divide, power, ...).
+    """
     try:
-        if operator == "+" or operator == "add":
+
+        if operator in operator_map:
+            operator = operator_map[operator]
+
+        if operator == "add":
             return a + b
 
-        elif operator == "-" or operator == "sub":
+        elif operator == "sub":
             return a - b
 
-        elif operator == "*" or operator == "mul":
+        elif operator == "mul":
             return a * b
 
-        elif operator == "/" or operator == "div":
+        elif operator == "div":
             if b == 0:
                 return "Cannot divide by zero"
             return a / b
 
-        elif operator == "**" or operator == "pow":
+        elif operator == "pow":
             return a ** b
 
-        else:
-            return "Invalid operator"
+        return "Invalid operator"
 
     except Exception as e:
         return f"Error: {e}"
+
+
+class CalculatorTool(Tool):
+
+    name = "calculator"
+    description = "Performs calculations"
+
+    def execute(self, a, b, operator):
+        return calculator(a, b, operator)
