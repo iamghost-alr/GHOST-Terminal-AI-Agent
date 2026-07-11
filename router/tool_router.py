@@ -8,6 +8,7 @@ from tools.web_search import web_search
 from tools.sites import open_sites
 from tools.dbtool import save_memory, get_memories
 from tools.application import open_app
+from tools.setup import run_setup
 
 # Words that should be stripped out of a math query before parsing.
 MATH_FILLER = ["what is", "calculate", "simple", "and", "whats"]
@@ -152,6 +153,11 @@ def _handle_memory(query):
     return "Here's what I know about you:\n" + "\n".join(lines)
 
 
+def _handle_setup(query):
+
+    return run_setup(query)
+
+
 # Dispatch table: tool name -> handler.
 # Keep the keys in sync with VALID_TOOLS in router/llm_router.py
 # (minus "none", which never reaches here).
@@ -164,6 +170,7 @@ _DISPATCH = {
     "web_search": _handle_web_search,
     "sites": _handle_sites,
     "application": _handle_application,
+    "setup": _handle_setup,
     "memory": _handle_memory,
 }
 
